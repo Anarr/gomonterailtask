@@ -9,6 +9,14 @@ import (
 	"log"
 )
 
+const (
+	ErrTicketNotAvailable = "there is no enough tickets in store"
+	ErrTogetherTicket = "we can only buy all the tickets of this type at once"
+	ErrEvenTicket = "we sell tickets in pairs (eg. 2, 4, 6 ...)"
+	ErrOneTicket = "we can only buy tickets in a quantity that will not leave only 1 ticket in the system after the transaction"
+	ErrBookingNotUpdated = "can not update booking"
+)
+
 type BookingRepository interface {
 	Book(b Booking) (*Booking, error)
 	Confirm(b Booking) (*Booking, error)
@@ -76,7 +84,7 @@ func (t *bookingRepository) Confirm(b Booking) (*Booking, error) {
 	}
 
 	if affectedRows, _ := res.RowsAffected(); affectedRows == 0 {
-		return nil, errors.New("can not update booking")
+		return nil, errors.New(ErrBookingNotUpdated)
 	}
 
 	return t.GetById(b.ID)
@@ -108,7 +116,7 @@ func (t *bookingRepository) IsValidQuantity(tt *ticket.TicketType, b *Booking, e
 
 	if et.GetAvailableQuantity() < b.Quantity {
 		fmt.Println(et.GetAvailableQuantity(), b.Quantity)
-		return errors.New("there is no enough tickets in store")
+		return errors.New(ErrTicketNotAvailable)
 	}
 
 	switch tt.SellingOption {
@@ -116,15 +124,15 @@ func (t *bookingRepository) IsValidQuantity(tt *ticket.TicketType, b *Booking, e
 		return nil
 	case ticket.Together:
 		if b.Quantity != et.GetAvailableQuantity() {
-			return errors.New("we can only buy all the tickets of this type at once")
+			return errors.New(ErrTogetherTicket)
 		}
 	case ticket.Even:
 		if b.Quantity%2 != 0 {
-			return errors.New("we sell tickets in pairs (eg. 2, 4, 6 ...)")
+			return errors.New(ErrEvenTicket)
 		}
 	case ticket.One:
 		if et.GetAvailableQuantity() - b.Quantity <= 1 {
-			return errors.New("we can only buy tickets in a quantity that will not leave only 1 ticket in the system after the transaction")
+			return errors.New(ErrOneTicket)
 		}
 	}
 

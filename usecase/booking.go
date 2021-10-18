@@ -12,6 +12,10 @@ import (
 	"net/http"
 )
 
+const(
+	ErrInvalidMoneyValue = "money is not valid value to buy this type of ticket for event"
+)
+
 type BookingUseCase interface {
 	Book(r *http.Request) (*booking.Booking, error)
 	Confirm(r *http.Request, id int) (*booking.Booking, error)
@@ -66,8 +70,8 @@ func (t *bookingService) Book(r *http.Request)  (*booking.Booking, error) {
 		return nil, err
 	}
 
-	if createBookingRequest.Price < ticketType.Price {
-		return nil, errors.New("money is not enouh to buy this type of ticket for event")
+	if createBookingRequest.Price != ticketType.Price {
+		return nil, errors.New(ErrInvalidMoneyValue)
 	}
 
 	eventTicket, err := t.eventRepository.Ticket(data.EventID, data.TicketTypeID)

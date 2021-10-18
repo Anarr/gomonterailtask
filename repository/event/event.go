@@ -6,6 +6,8 @@ import (
 	"log"
 )
 
+const ErrEventExpired = "event booking date expired"
+
 type EventRepository interface {
 	All() ([]Event, error)
 	Tickets(id int) ([]EventTicket, error)
@@ -139,18 +141,18 @@ func (t *eventRepository) IsExpired(id int) error  {
 
 	if err != nil {
 		log.Println(err)
-		return errors.New("event booking date expired")
+		return errors.New(ErrEventExpired)
 	}
 
 	row := stmt.QueryRow(id)
 
 	if err = row.Scan(&e.ID); err != nil {
 		log.Println(err)
-		return errors.New("event booking date expired")
+		return errors.New(ErrEventExpired)
 	}
 
 	if e.ID == 0 {
-		return errors.New("event booking date expired")
+		return errors.New(ErrEventExpired)
 	}
 
 	return nil
