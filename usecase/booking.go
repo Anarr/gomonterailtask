@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/Anarr/gomonterailtask/repository/booking"
 	"github.com/Anarr/gomonterailtask/repository/event"
 	"github.com/Anarr/gomonterailtask/repository/ticket"
@@ -63,6 +64,10 @@ func (t *bookingService) Book(r *http.Request)  (*booking.Booking, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	if createBookingRequest.Price < ticketType.Price {
+		return nil, errors.New("money is not enouh to buy this type of ticket for event")
 	}
 
 	eventTicket, err := t.eventRepository.Ticket(data.EventID, data.TicketTypeID)

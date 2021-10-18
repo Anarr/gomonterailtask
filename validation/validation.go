@@ -8,6 +8,7 @@ type CreateBookingRequest struct {
 	EventId int `json:"event_id" valid:"required"`
 	TicketTypeId int `json:"ticket_type_id" valid:"required"`
 	Quantity int `json:"quantity" valid:"required"`
+	Price float64 `json:"price" valid:"required"`
 }
 
 func (c *CreateBookingRequest) Validate() (bool, error) {
