@@ -18,4 +18,6 @@ Exists endpoints:
 * (POST) localhost:8001/api/bookings -- new booking request
 * (PATCH) localhost:8001/api/bookings/3 -- confirm booking
 
+
+Booking api's requqire `user_id` in header. It accepts integer values. `user_id` describe booking owner
 Detailed Api Doc shared in postman: https://documenter.getpostman.com/view/1163851/UV5Xgwai
