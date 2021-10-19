@@ -1,9 +1,11 @@
+`init.sql` file contains mysql datase structre before start application import it mysql database    
+
 To start application follow the commands below:
 
     > cd gomonterail 
     > go build -o server
     > ./server
-    
+
 After starting application the database seedings run automatically
 
 The task does not contain any details about user authentication.
